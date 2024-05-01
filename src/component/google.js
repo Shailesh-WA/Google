@@ -39,8 +39,9 @@ const Google = () => {
 
     const handleScriptLoad = () => {
       try {
-        if (window.adsbygoogle && !window.adsbygoogle.loaded) {
+        if (window.adsbygoogle) {
           window.adsbygoogle.push({});
+          console.log("add is running");
         }
       } catch (error) {
         console.log("Error in loading ads:", error);
