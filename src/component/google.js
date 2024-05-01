@@ -8,28 +8,60 @@ const Google = () => {
   //     }
   //   }, []);
 
-  useEffect(() => {
-    const scriptElement = document.querySelector(
-      'script[src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-google-pub-3940256099942544"]'
-    );
+  //   useEffect(() => {
+  //     const scriptElement = document.querySelector(
+  //       'script[src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-google-pub-3940256099942544"]'
+  //     );
 
-    const handleScriptLoad = async () => {
+  //     const handleScriptLoad = async () => {
+  //       try {
+  //         if (window?.adsbygoogle) {
+  //           // console.log("push ads", window);
+  //           await window.adsbygoogle.push({});
+  //         } else {
+  //           scriptElement?.addEventListener("load", handleScriptLoad);
+  //         }
+  //       } catch (error) {
+  //         console.log("Arror in the ads!!!", error);
+  //       }
+  //     };
+  //     handleScriptLoad();
+
+  //     return () => {
+  //       if (scriptElement) {
+  //         scriptElement.removeEventListener("load", handleScriptLoad);
+  //       }
+  //     };
+  //   }, []);
+  useEffect(() => {
+    const scriptUrl =
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-google-pub-3940256099942544";
+
+    const handleScriptLoad = () => {
       try {
-        if (window?.adsbygoogle) {
-          // console.log("push ads", window);
-          await window.adsbygoogle.push({});
-        } else {
-          scriptElement?.addEventListener("load", handleScriptLoad);
+        if (window.adsbygoogle && !window.adsbygoogle.loaded) {
+          window.adsbygoogle.push({});
         }
       } catch (error) {
-        console.log("Arror in the ads!!!", error);
+        console.log("Error in loading ads:", error);
       }
     };
-    handleScriptLoad();
+
+    const existingScript = document.querySelector(`script[src="${scriptUrl}"]`);
+
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.src = scriptUrl;
+      script.async = true;
+      script.onload = handleScriptLoad;
+      document.body.appendChild(script);
+    } else {
+      handleScriptLoad();
+    }
 
     return () => {
-      if (scriptElement) {
-        scriptElement.removeEventListener("load", handleScriptLoad);
+      if (existingScript) {
+        existingScript.onload = null;
       }
     };
   }, []);
